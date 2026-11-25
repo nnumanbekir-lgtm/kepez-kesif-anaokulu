@@ -336,9 +336,9 @@ function check(n){var el=f[n],v=el.type==='checkbox'?el.checked:el.value.trim(),
   if(n==='tel'){var d=v.replace(/\D/g,'');if(!d)msg='Telefonunuzu yazın; size buradan döneceğiz.';else if(!/^0?5\d{9}$/.test(d))msg='Cep numarası 05 ile başlayan 11 hane olmalı.'}
   if(n==='kvkk'&&!v)msg='Devam etmek için onay kutusunu işaretleyin.';
   $('e-'+n).textContent=msg;if(el.type!=='checkbox')el.setAttribute('aria-invalid',msg?'true':'false');return !msg}
-['veli','tel'].forEach(function(n){f[n].addEventListener('blur',function(){if(f[n].value.trim()||$('e-'+n).textContent)check(n)})});
-f.kvkk.addEventListener('change',function(){check('kvkk')});
-f.addEventListener('submit',function(e){e.preventDefault();var ok=$('ok');ok.hidden=true;
+['veli','tel'].forEach(function(n){f[n].addEventListener('input',function(){if(f.dataset.tried)check(n)});f[n].addEventListener('change',function(){if(f.dataset.tried)check(n)})});
+f.kvkk.addEventListener('change',function(){if(f.dataset.tried)check('kvkk')});
+f.addEventListener('submit',function(e){e.preventDefault();var ok=$('ok');ok.hidden=true;f.dataset.tried='1';
   var bad=['veli','tel','kvkk'].filter(function(n){return !check(n)});if(bad.length){f[bad[0]].focus();return}
   var t='Merhaba, web sitenizden yazıyorum.\nKonu: '+f.konu.value+'\nVeli: '+f.veli.value+'\nTelefon: '+f.tel.value+(f.cocuk.value?'\nÇocuk: '+f.cocuk.value:'')+(f.dogum.value?'\nDoğum tarihi: '+f.dogum.value.split('-').reverse().join('.'):'')+(profile?'\nKeşif profili: '+profile.n:'')+(f.not.value.trim()?'\nNot: '+f.not.value.trim():'');
   ok.hidden=false;
